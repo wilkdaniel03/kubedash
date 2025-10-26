@@ -1,0 +1,885 @@
+basePath: /
+definitions:
+  models.CreateDeploymentRequestModel:
+    properties:
+      cpu_limit:
+        description: 'CPU limit for each pod in the deployment (default: 200m)'
+        example: 200m
+        type: string
+      cpu_request:
+        description: 'CPU request for each pod in the deployment (default: 100m)'
+        example: 100m
+        type: string
+      image:
+        description: Docker image to use in the deployment
+        example: nginx
+        type: string
+      memory_limit:
+        description: 'Memory limit for each pod in the deployment (default: 512Mi)'
+        example: 512Mi
+        type: string
+      memory_request:
+        description: 'Memory request for each pod in the deployment (default: 256Mi)'
+        example: 256Mi
+        type: string
+      name:
+        description: Name for the deployment
+        example: mydeployment
+        type: string
+      namespace:
+        description: Namespace for the deployment
+        example: default
+        type: string
+      replicas:
+        description: Number of replicas for the deployment
+        example: 2
+        maximum: 32
+        minimum: 1
+        type: integer
+    required:
+    - image
+    - name
+    - namespace
+    - replicas
+    type: object
+  models.CreateServiceRequestModel:
+    properties:
+      external_ips:
+        description: List of external IPs to expose the service on (not used yet)
+        example:
+        - 10.1.2.30
+        - 10.2.2.30
+        items:
+          type: string
+        type: array
+      name:
+        description: Name for the service
+        example: nginx-service
+        type: string
+      namespace:
+        description: Namespace for the service
+        example: default
+        type: string
+      node_port:
+        description: External node port for NodePort service type
+        example: 30080
+        maximum: 32767
+        minimum: 30000
+        type: integer
+      port:
+        description: Port of the service
+        example: 80
+        maximum: 65535
+        minimum: 1
+        type: integer
+      selector:
+        additionalProperties:
+          type: string
+        description: 'Selector to match pods for the service. To create service for
+          specific deployment use {"app": deploymentname}.'
+        example:
+          '{"app"': ' "nginx"}'
+        type: object
+      target_port:
+        description: Target port on the container
+        example: 80
+        maximum: 65535
+        minimum: 1
+        type: integer
+      type:
+        description: Type of service (ClusterIP or NodePort) - load balancers not
+          yet supported
+        enum:
+        - ClusterIP
+        - NodePort
+        type: string
+    required:
+    - name
+    - namespace
+    - port
+    - selector
+    - type
+    type: object
+  models.DBClusterMetricsModel:
+    properties:
+      pods:
+        description: Timestamp indicating when the record was created. This is the
+          time when the metrics were collected.
+        items:
+          $ref: '#/definitions/models.DBPodMetricsModel'
+        type: array
+    type: object
+  models.DBContainerMetricsModel:
+    properties:
+      cpu_usage:
+        description: CPU usage of the container in millicores (1/1000th of a core).
+        example: 20
+        type: integer
+      memory_usage:
+        description: Memory usage of the container in bytes.
+        example: 10485760
+        type: integer
+      name:
+        description: Name of the container.
+        example: nginx
+        type: string
+    type: object
+  models.DBPodMetricsModel:
+    properties:
+      containers:
+        description: Metrics records grouped by containers.
+        items:
+          $ref: '#/definitions/models.DBContainerMetricsModel'
+        type: array
+      name:
+        description: Name of the pod.
+        example: mypod
+        type: string
+    type: object
+  models.DeleteDeploymentRequestModel:
+    properties:
+      name:
+        description: Name of the deployment to delete
+        example: mydeployment
+        type: string
+      namespace:
+        description: Namespace of the deployment to delete
+        example: default
+        type: string
+    required:
+    - name
+    - namespace
+    type: object
+  models.DeletePodMetricsRequestModel:
+    properties:
+      end_time:
+        description: End time of metrics to delete in RFC3339 format
+        example: "2024-08-24T20:30:00.000Z"
+        type: string
+      start_time:
+        description: Start time of metrics to delete in RFC3339 format
+        example: "2024-08-24T20:00:00.000Z"
+        type: string
+    type: object
+  models.DeleteServiceRequestModel:
+    properties:
+      name:
+        description: Name of the service to delete
+        example: myservice
+        type: string
+      namespace:
+        description: Namespace of the service to delete
+        example: default
+        type: string
+    required:
+    - name
+    - namespace
+    type: object
+  models.ListContainersReponseModel:
+    properties:
+      containers:
+        description: A list of ListContainersReponseModelContainer objects representing
+          the containers.
+        items:
+          $ref: '#/definitions/models.ListContainersReponseModelContainer'
+        type: array
+    type: object
+  models.ListContainersReponseModelContainer:
+    properties:
+      image:
+        description: The image used by the container.
+        example: nginx
+        type: string
+      name:
+        description: The name of the container.
+        example: nginx-deployment
+        type: string
+      namespace:
+        description: The namespace of the container.
+        example: default
+        type: string
+      ports:
+        description: A list of ListContainersReponseModelPort objects representing
+          port mappings for the container.
+        items:
+          $ref: '#/definitions/models.ListContainersReponseModelPort'
+        type: array
+      resources:
+        allOf:
+        - $ref: '#/definitions/models.ListContainersReponseModelResources'
+        description: Resource limits and requests for the container.
+    type: object
+  models.ListContainersReponseModelPort:
+    properties:
+      container_port:
+        description: The container port number.
+        example: 9512
+        type: integer
+      name:
+        description: The name of the port.
+        example: myport
+        type: string
+      protocol:
+        description: The protocol used by the port.
+        example: TCP
+        type: string
+    type: object
+  models.ListContainersReponseModelResources:
+    properties:
+      cpu_limit:
+        description: The CPU limit for the container (e.g., "200m").
+        example: 200m
+        type: string
+      cpu_request:
+        description: The CPU request for the container (e.g., "100m").
+        example: 100m
+        type: string
+      memory_limit:
+        description: The memory limit for the container (e.g., "1Gi").
+        example: 1Gi
+        type: string
+      memory_request:
+        description: The memory request for the container (e.g., "512Mi").
+        example: 512Mi
+        type: string
+    type: object
+  models.ListDeploymentsResponseModel:
+    properties:
+      deployments:
+        description: A slice of ListDeploymentsResponseModelDeployment objects representing
+          the deployments.
+        items:
+          $ref: '#/definitions/models.ListDeploymentsResponseModelDeployment'
+        type: array
+    type: object
+  models.ListDeploymentsResponseModelDeployment:
+    properties:
+      creation_time:
+        description: The creation time of the deployment.
+        example: "2024-08-24T20:00:00.000Z"
+        type: string
+      name:
+        description: The name of the deployment.
+        example: nginx-deployment
+        type: string
+      namespace:
+        description: The namespace of the deployment.
+        example: default
+        type: string
+      ready_replicas:
+        description: The number of ready replicas in the deployment.
+        example: 3
+        type: integer
+      replicas:
+        description: The number of replicas in the deployment.
+        example: 3
+        type: integer
+      unavailable_replicas:
+        description: The number of unavailable replicas in the deployment.
+        example: 0
+        type: integer
+      updated_replicas:
+        description: The number of updated replicas in the deployment.
+        example: 3
+        type: integer
+    type: object
+  models.ListPodsV2ResponseModel:
+    properties:
+      pods:
+        description: A slice of ListPodsV2ResponseModelPod objects representing the
+          pods.
+        items:
+          $ref: '#/definitions/models.ListPodsV2ResponseModelPod'
+        type: array
+    type: object
+  models.ListPodsV2ResponseModelPod:
+    properties:
+      name:
+        description: The name of the pod.
+        example: nginx-deploy-59849dcb58-tdknv
+        type: string
+      namespace:
+        description: The namespace of the pod.
+        example: default
+        type: string
+      status:
+        description: The status of the pod.
+        example: Running
+        type: string
+    type: object
+  models.ListServicesResponseModel:
+    properties:
+      services:
+        description: A list of ListServicesResponseModelService containing services
+          data.
+        items:
+          $ref: '#/definitions/models.ListServicesResponseModelService'
+        type: array
+    type: object
+  models.ListServicesResponseModelPort:
+    properties:
+      name:
+        description: The name of the port.
+        example: myport
+        type: string
+      node_port:
+        description: The node port number for the service. Optional.
+        example: 30030
+        type: integer
+      port:
+        description: The service port number. Optional.
+        example: 8080
+        type: integer
+      protocol:
+        description: The protocol used by the port. Optional.
+        example: TCP
+        type: string
+      target_port:
+        description: The target port number for the service. Optional.
+        example: 8080
+        type: integer
+    type: object
+  models.ListServicesResponseModelService:
+    properties:
+      cluster_ips:
+        description: The cluster IP addresses assigned to the service.
+        example:
+        - 10.1.2.30
+        - 10.2.2.30
+        items:
+          type: string
+        type: array
+      name:
+        description: The name of the service.
+        example: myservice
+        type: string
+      namespace:
+        description: The namespace of the service.
+        example: default
+        type: string
+      ports:
+        description: A slice of ListServicesResponseModelPort objects representing
+          port mappings for the service.
+        items:
+          $ref: '#/definitions/models.ListServicesResponseModelPort'
+        type: array
+      selector:
+        additionalProperties:
+          type: string
+        description: A map of key-value pairs used to select pods for the service.
+        example:
+          '{"app"': ' "nginx"}'
+        type: object
+      type:
+        description: The type of the service.
+        example: NodePort
+        type: string
+    type: object
+  models.UpdateDeploymentRequestModel:
+    properties:
+      cpu_limit:
+        description: CPU limit for each pod in the deployment
+        example: 200m
+        type: string
+      cpu_request:
+        description: CPU request for each pod in the deployment
+        example: 100m
+        type: string
+      memory_limit:
+        description: Memory limit for each pod in the deployment
+        example: 512Mi
+        type: string
+      memory_request:
+        description: Memory request for each pod in the deployment
+        example: 256Mi
+        type: string
+      name:
+        description: Name for the deployment
+        example: mydeployment
+        type: string
+      namespace:
+        description: Namespace for the deployment
+        example: default
+        type: string
+      replicas:
+        description: Number of replicas for the deployment
+        example: 2
+        maximum: 32
+        minimum: 0
+        type: integer
+    required:
+    - name
+    - namespace
+    type: object
+host: localhost:5000
+info:
+  contact:
+    email: olokelo@gmail.com
+    name: API Support
+  description: Backend API of kube-dash
+  license:
+    name: MIT
+    url: https://opensource.org/license/mit
+  termsOfService: http://swagger.io/terms/
+  title: kube-dash backend
+  version: "1.0"
+paths:
+  /api/v1/accessible:
+    get:
+      description: A check to see if user can reach public endpoints
+      responses:
+        "200":
+          description: Success
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Test unauthenticated endpoint
+      tags:
+      - Test
+  /api/v1/createdeployment:
+    post:
+      consumes:
+      - application/json
+      description: Create a new deployment in the cluster with the given name, namespace
+        and parameters.
+      parameters:
+      - description: Request Model of Create Deployment
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateDeploymentRequestModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+      security:
+      - ApiKeyAuth: []
+      summary: Create New Deployment
+      tags:
+      - Deployment
+  /api/v1/createservice:
+    post:
+      consumes:
+      - application/json
+      description: Creates service in kubernetes cluster. Currently only NodePort
+        and ClusterIP are supported, LoadBalancer coming later.
+      parameters:
+      - description: Request Model of Create Service
+        in: body
+        name: request
+        schema:
+          $ref: '#/definitions/models.CreateServiceRequestModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            type: object
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+      security:
+      - ApiKeyAuth: []
+      summary: Create Service
+      tags:
+      - Services
+  /api/v1/deletedeployment:
+    post:
+      consumes:
+      - application/json
+      description: Removes the deployment by given name and namespace.
+      parameters:
+      - description: Request Model of Delete Deployment
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.DeleteDeploymentRequestModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+      security:
+      - ApiKeyAuth: []
+      summary: Delete Deployment
+      tags:
+      - Deployment
+  /api/v1/deletepodmetrics:
+    post:
+      consumes:
+      - application/json
+      description: Delete metrics from the database. When no parameters are specified,
+        all metrics will be deleted.
+      parameters:
+      - description: Request Model of Deleting Pod Metrics
+        in: body
+        name: request
+        schema:
+          $ref: '#/definitions/models.DeletePodMetricsRequestModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            type: object
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+      security:
+      - ApiKeyAuth: []
+      summary: Delete Pod Metrics
+      tags:
+      - Metrics
+  /api/v1/deleteservice:
+    post:
+      consumes:
+      - application/json
+      description: Removes the service by given name and namespace
+      parameters:
+      - description: Request Model of Delete Service
+        in: body
+        name: request
+        schema:
+          $ref: '#/definitions/models.DeleteServiceRequestModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            type: object
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+      security:
+      - ApiKeyAuth: []
+      summary: Delete Service
+      tags:
+      - Services
+  /api/v1/getpodmetrics:
+    get:
+      consumes:
+      - application/json
+      deprecated: true
+      description: Get metrics for specific pod or all pods in the cluster
+      parameters:
+      - description: Namespace to filter pod metrics
+        example: default
+        in: query
+        name: namespace
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+      security:
+      - ApiKeyAuth: []
+      summary: Get Pod Metrics (deprecated)
+      tags:
+      - Metrics
+  /api/v1/listcontainers:
+    get:
+      description: Get all available containers in the cluster
+      parameters:
+      - description: Namespace of the pod containing the containers
+        example: default
+        in: query
+        name: namespace
+        type: string
+      - description: Name of the pod containing the containers
+        example: mypod
+        in: query
+        name: podName
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ListContainersReponseModel'
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+      security:
+      - ApiKeyAuth: []
+      summary: List Available Containers
+      tags:
+      - Containers
+  /api/v1/listdeployments:
+    get:
+      description: Get all deployments in the cluster
+      parameters:
+      - description: Namespace to filter deployments
+        example: default
+        in: query
+        name: namespace
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ListDeploymentsResponseModel'
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+      security:
+      - ApiKeyAuth: []
+      summary: List All Deployments
+      tags:
+      - Deployment
+  /api/v1/listnamespaces:
+    get:
+      description: Returns the list of all available namespaces in the cluster
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              type: string
+            type: array
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+      security:
+      - ApiKeyAuth: []
+      summary: List Available Namespaces
+      tags:
+      - Namespaces
+  /api/v1/listpods:
+    get:
+      deprecated: true
+      description: Get all available pods in the cluster
+      parameters:
+      - description: Namespace to filter pods
+        example: default
+        in: query
+        name: namespace
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+      security:
+      - ApiKeyAuth: []
+      summary: List Available Pods (deprecated)
+      tags:
+      - Pods
+  /api/v1/listservices:
+    get:
+      description: Get all available services in the cluster
+      parameters:
+      - description: Namespace to filter services
+        example: default
+        in: query
+        name: namespace
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ListServicesResponseModel'
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+      security:
+      - ApiKeyAuth: []
+      summary: List Available Services
+      tags:
+      - Services
+  /api/v1/login:
+    get:
+      description: Returns a bearer token that has to be provided for authenticated
+        endpoints
+      parameters:
+      - description: Password for authentication
+        in: query
+        name: pass
+        required: true
+        type: string
+      - description: Username for authentication
+        in: query
+        name: user
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+      summary: Login endpoint
+      tags:
+      - Login
+  /api/v1/restricted:
+    get:
+      description: A check to see if user can reach restricted endpoints
+      responses:
+        "200":
+          description: Success
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Test authenticated endpoint
+      tags:
+      - Test
+  /api/v1/updatedeployment:
+    post:
+      consumes:
+      - application/json
+      description: Update the parameters of already existing deployment.
+      parameters:
+      - description: Request Model of Update Deployment
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateDeploymentRequestModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+      security:
+      - ApiKeyAuth: []
+      summary: Update Existing Deployment
+      tags:
+      - Deployment
+  /api/v2/getpodmetrics:
+    get:
+      description: Get metrics for specific pod or all pods in the cluster
+      parameters:
+      - description: End time for metric collection in RFC3339 format
+        example: "2024-08-24T20:30:00.000Z"
+        in: query
+        name: endTime
+        type: string
+      - description: Name of the pod for which to retrieve metrics
+        example: mypod
+        in: query
+        name: podName
+        type: string
+      - description: Start time for metric collection in RFC3339 format
+        example: "2024-08-24T20:00:00.000Z"
+        in: query
+        name: startTime
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.DBClusterMetricsModel'
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+      security:
+      - ApiKeyAuth: []
+      summary: Get Pod Metrics
+      tags:
+      - Metrics
+  /api/v2/listpods:
+    get:
+      description: Get all available pods in the cluster
+      parameters:
+      - description: Namespace to filter pods
+        example: default
+        in: query
+        name: namespace
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ListPodsV2ResponseModel'
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+      security:
+      - ApiKeyAuth: []
+      summary: List Available Pods
+      tags:
+      - Pods
+swagger: "2.0"

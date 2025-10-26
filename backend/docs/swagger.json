@@ -1,0 +1,1283 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Backend API of kube-dash",
+        "title": "kube-dash backend",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "name": "API Support",
+            "email": "olokelo@gmail.com"
+        },
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/license/mit"
+        },
+        "version": "1.0"
+    },
+    "host": "localhost:5000",
+    "basePath": "/",
+    "paths": {
+        "/api/v1/accessible": {
+            "get": {
+                "description": "A check to see if user can reach public endpoints",
+                "tags": [
+                    "Test"
+                ],
+                "summary": "Test unauthenticated endpoint",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/createdeployment": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Create a new deployment in the cluster with the given name, namespace and parameters.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Deployment"
+                ],
+                "summary": "Create New Deployment",
+                "parameters": [
+                    {
+                        "description": "Request Model of Create Deployment",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.CreateDeploymentRequestModel"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/v1/createservice": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Creates service in kubernetes cluster. Currently only NodePort and ClusterIP are supported, LoadBalancer coming later.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Services"
+                ],
+                "summary": "Create Service",
+                "parameters": [
+                    {
+                        "description": "Request Model of Create Service",
+                        "name": "request",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/models.CreateServiceRequestModel"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "type": "object"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/v1/deletedeployment": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Removes the deployment by given name and namespace.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Deployment"
+                ],
+                "summary": "Delete Deployment",
+                "parameters": [
+                    {
+                        "description": "Request Model of Delete Deployment",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.DeleteDeploymentRequestModel"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/v1/deletepodmetrics": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Delete metrics from the database. When no parameters are specified, all metrics will be deleted.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Metrics"
+                ],
+                "summary": "Delete Pod Metrics",
+                "parameters": [
+                    {
+                        "description": "Request Model of Deleting Pod Metrics",
+                        "name": "request",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/models.DeletePodMetricsRequestModel"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "type": "object"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/v1/deleteservice": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Removes the service by given name and namespace",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Services"
+                ],
+                "summary": "Delete Service",
+                "parameters": [
+                    {
+                        "description": "Request Model of Delete Service",
+                        "name": "request",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/models.DeleteServiceRequestModel"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "type": "object"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/v1/getpodmetrics": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Get metrics for specific pod or all pods in the cluster",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Metrics"
+                ],
+                "summary": "Get Pod Metrics (deprecated)",
+                "deprecated": true,
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "default",
+                        "description": "Namespace to filter pod metrics",
+                        "name": "namespace",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/v1/listcontainers": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Get all available containers in the cluster",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Containers"
+                ],
+                "summary": "List Available Containers",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "default",
+                        "description": "Namespace of the pod containing the containers",
+                        "name": "namespace",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "example": "mypod",
+                        "description": "Name of the pod containing the containers",
+                        "name": "podName",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.ListContainersReponseModel"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/v1/listdeployments": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Get all deployments in the cluster",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Deployment"
+                ],
+                "summary": "List All Deployments",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "default",
+                        "description": "Namespace to filter deployments",
+                        "name": "namespace",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.ListDeploymentsResponseModel"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/v1/listnamespaces": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Returns the list of all available namespaces in the cluster",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Namespaces"
+                ],
+                "summary": "List Available Namespaces",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/v1/listpods": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Get all available pods in the cluster",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Pods"
+                ],
+                "summary": "List Available Pods (deprecated)",
+                "deprecated": true,
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "default",
+                        "description": "Namespace to filter pods",
+                        "name": "namespace",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/v1/listservices": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Get all available services in the cluster",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Services"
+                ],
+                "summary": "List Available Services",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "default",
+                        "description": "Namespace to filter services",
+                        "name": "namespace",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.ListServicesResponseModel"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/v1/login": {
+            "get": {
+                "description": "Returns a bearer token that has to be provided for authenticated endpoints",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Login"
+                ],
+                "summary": "Login endpoint",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Password for authentication",
+                        "name": "pass",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Username for authentication",
+                        "name": "user",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/v1/restricted": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "A check to see if user can reach restricted endpoints",
+                "tags": [
+                    "Test"
+                ],
+                "summary": "Test authenticated endpoint",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/updatedeployment": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Update the parameters of already existing deployment.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Deployment"
+                ],
+                "summary": "Update Existing Deployment",
+                "parameters": [
+                    {
+                        "description": "Request Model of Update Deployment",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.UpdateDeploymentRequestModel"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/v2/getpodmetrics": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Get metrics for specific pod or all pods in the cluster",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Metrics"
+                ],
+                "summary": "Get Pod Metrics",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "2024-08-24T20:30:00.000Z",
+                        "description": "End time for metric collection in RFC3339 format",
+                        "name": "endTime",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "example": "mypod",
+                        "description": "Name of the pod for which to retrieve metrics",
+                        "name": "podName",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "example": "2024-08-24T20:00:00.000Z",
+                        "description": "Start time for metric collection in RFC3339 format",
+                        "name": "startTime",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.DBClusterMetricsModel"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/v2/listpods": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Get all available pods in the cluster",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Pods"
+                ],
+                "summary": "List Available Pods",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "default",
+                        "description": "Namespace to filter pods",
+                        "name": "namespace",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.ListPodsV2ResponseModel"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "models.CreateDeploymentRequestModel": {
+            "type": "object",
+            "required": [
+                "image",
+                "name",
+                "namespace",
+                "replicas"
+            ],
+            "properties": {
+                "cpu_limit": {
+                    "description": "CPU limit for each pod in the deployment (default: 200m)",
+                    "type": "string",
+                    "example": "200m"
+                },
+                "cpu_request": {
+                    "description": "CPU request for each pod in the deployment (default: 100m)",
+                    "type": "string",
+                    "example": "100m"
+                },
+                "image": {
+                    "description": "Docker image to use in the deployment",
+                    "type": "string",
+                    "example": "nginx"
+                },
+                "memory_limit": {
+                    "description": "Memory limit for each pod in the deployment (default: 512Mi)",
+                    "type": "string",
+                    "example": "512Mi"
+                },
+                "memory_request": {
+                    "description": "Memory request for each pod in the deployment (default: 256Mi)",
+                    "type": "string",
+                    "example": "256Mi"
+                },
+                "name": {
+                    "description": "Name for the deployment",
+                    "type": "string",
+                    "example": "mydeployment"
+                },
+                "namespace": {
+                    "description": "Namespace for the deployment",
+                    "type": "string",
+                    "example": "default"
+                },
+                "replicas": {
+                    "description": "Number of replicas for the deployment",
+                    "type": "integer",
+                    "maximum": 32,
+                    "minimum": 1,
+                    "example": 2
+                }
+            }
+        },
+        "models.CreateServiceRequestModel": {
+            "type": "object",
+            "required": [
+                "name",
+                "namespace",
+                "port",
+                "selector",
+                "type"
+            ],
+            "properties": {
+                "external_ips": {
+                    "description": "List of external IPs to expose the service on (not used yet)",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "10.1.2.30",
+                        "10.2.2.30"
+                    ]
+                },
+                "name": {
+                    "description": "Name for the service",
+                    "type": "string",
+                    "example": "nginx-service"
+                },
+                "namespace": {
+                    "description": "Namespace for the service",
+                    "type": "string",
+                    "example": "default"
+                },
+                "node_port": {
+                    "description": "External node port for NodePort service type",
+                    "type": "integer",
+                    "maximum": 32767,
+                    "minimum": 30000,
+                    "example": 30080
+                },
+                "port": {
+                    "description": "Port of the service",
+                    "type": "integer",
+                    "maximum": 65535,
+                    "minimum": 1,
+                    "example": 80
+                },
+                "selector": {
+                    "description": "Selector to match pods for the service. To create service for specific deployment use {\"app\": deploymentname}.",
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "example": {
+                        "{\"app\"": " \"nginx\"}"
+                    }
+                },
+                "target_port": {
+                    "description": "Target port on the container",
+                    "type": "integer",
+                    "maximum": 65535,
+                    "minimum": 1,
+                    "example": 80
+                },
+                "type": {
+                    "description": "Type of service (ClusterIP or NodePort) - load balancers not yet supported",
+                    "type": "string",
+                    "enum": [
+                        "ClusterIP",
+                        "NodePort"
+                    ]
+                }
+            }
+        },
+        "models.DBClusterMetricsModel": {
+            "type": "object",
+            "properties": {
+                "pods": {
+                    "description": "Timestamp indicating when the record was created. This is the time when the metrics were collected.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.DBPodMetricsModel"
+                    }
+                }
+            }
+        },
+        "models.DBContainerMetricsModel": {
+            "type": "object",
+            "properties": {
+                "cpu_usage": {
+                    "description": "CPU usage of the container in millicores (1/1000th of a core).",
+                    "type": "integer",
+                    "example": 20
+                },
+                "memory_usage": {
+                    "description": "Memory usage of the container in bytes.",
+                    "type": "integer",
+                    "example": 10485760
+                },
+                "name": {
+                    "description": "Name of the container.",
+                    "type": "string",
+                    "example": "nginx"
+                }
+            }
+        },
+        "models.DBPodMetricsModel": {
+            "type": "object",
+            "properties": {
+                "containers": {
+                    "description": "Metrics records grouped by containers.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.DBContainerMetricsModel"
+                    }
+                },
+                "name": {
+                    "description": "Name of the pod.",
+                    "type": "string",
+                    "example": "mypod"
+                }
+            }
+        },
+        "models.DeleteDeploymentRequestModel": {
+            "type": "object",
+            "required": [
+                "name",
+                "namespace"
+            ],
+            "properties": {
+                "name": {
+                    "description": "Name of the deployment to delete",
+                    "type": "string",
+                    "example": "mydeployment"
+                },
+                "namespace": {
+                    "description": "Namespace of the deployment to delete",
+                    "type": "string",
+                    "example": "default"
+                }
+            }
+        },
+        "models.DeletePodMetricsRequestModel": {
+            "type": "object",
+            "properties": {
+                "end_time": {
+                    "description": "End time of metrics to delete in RFC3339 format",
+                    "type": "string",
+                    "example": "2024-08-24T20:30:00.000Z"
+                },
+                "start_time": {
+                    "description": "Start time of metrics to delete in RFC3339 format",
+                    "type": "string",
+                    "example": "2024-08-24T20:00:00.000Z"
+                }
+            }
+        },
+        "models.DeleteServiceRequestModel": {
+            "type": "object",
+            "required": [
+                "name",
+                "namespace"
+            ],
+            "properties": {
+                "name": {
+                    "description": "Name of the service to delete",
+                    "type": "string",
+                    "example": "myservice"
+                },
+                "namespace": {
+                    "description": "Namespace of the service to delete",
+                    "type": "string",
+                    "example": "default"
+                }
+            }
+        },
+        "models.ListContainersReponseModel": {
+            "type": "object",
+            "properties": {
+                "containers": {
+                    "description": "A list of ListContainersReponseModelContainer objects representing the containers.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.ListContainersReponseModelContainer"
+                    }
+                }
+            }
+        },
+        "models.ListContainersReponseModelContainer": {
+            "type": "object",
+            "properties": {
+                "image": {
+                    "description": "The image used by the container.",
+                    "type": "string",
+                    "example": "nginx"
+                },
+                "name": {
+                    "description": "The name of the container.",
+                    "type": "string",
+                    "example": "nginx-deployment"
+                },
+                "namespace": {
+                    "description": "The namespace of the container.",
+                    "type": "string",
+                    "example": "default"
+                },
+                "ports": {
+                    "description": "A list of ListContainersReponseModelPort objects representing port mappings for the container.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.ListContainersReponseModelPort"
+                    }
+                },
+                "resources": {
+                    "description": "Resource limits and requests for the container.",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/models.ListContainersReponseModelResources"
+                        }
+                    ]
+                }
+            }
+        },
+        "models.ListContainersReponseModelPort": {
+            "type": "object",
+            "properties": {
+                "container_port": {
+                    "description": "The container port number.",
+                    "type": "integer",
+                    "example": 9512
+                },
+                "name": {
+                    "description": "The name of the port.",
+                    "type": "string",
+                    "example": "myport"
+                },
+                "protocol": {
+                    "description": "The protocol used by the port.",
+                    "type": "string",
+                    "example": "TCP"
+                }
+            }
+        },
+        "models.ListContainersReponseModelResources": {
+            "type": "object",
+            "properties": {
+                "cpu_limit": {
+                    "description": "The CPU limit for the container (e.g., \"200m\").",
+                    "type": "string",
+                    "example": "200m"
+                },
+                "cpu_request": {
+                    "description": "The CPU request for the container (e.g., \"100m\").",
+                    "type": "string",
+                    "example": "100m"
+                },
+                "memory_limit": {
+                    "description": "The memory limit for the container (e.g., \"1Gi\").",
+                    "type": "string",
+                    "example": "1Gi"
+                },
+                "memory_request": {
+                    "description": "The memory request for the container (e.g., \"512Mi\").",
+                    "type": "string",
+                    "example": "512Mi"
+                }
+            }
+        },
+        "models.ListDeploymentsResponseModel": {
+            "type": "object",
+            "properties": {
+                "deployments": {
+                    "description": "A slice of ListDeploymentsResponseModelDeployment objects representing the deployments.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.ListDeploymentsResponseModelDeployment"
+                    }
+                }
+            }
+        },
+        "models.ListDeploymentsResponseModelDeployment": {
+            "type": "object",
+            "properties": {
+                "creation_time": {
+                    "description": "The creation time of the deployment.",
+                    "type": "string",
+                    "example": "2024-08-24T20:00:00.000Z"
+                },
+                "name": {
+                    "description": "The name of the deployment.",
+                    "type": "string",
+                    "example": "nginx-deployment"
+                },
+                "namespace": {
+                    "description": "The namespace of the deployment.",
+                    "type": "string",
+                    "example": "default"
+                },
+                "ready_replicas": {
+                    "description": "The number of ready replicas in the deployment.",
+                    "type": "integer",
+                    "example": 3
+                },
+                "replicas": {
+                    "description": "The number of replicas in the deployment.",
+                    "type": "integer",
+                    "example": 3
+                },
+                "unavailable_replicas": {
+                    "description": "The number of unavailable replicas in the deployment.",
+                    "type": "integer",
+                    "example": 0
+                },
+                "updated_replicas": {
+                    "description": "The number of updated replicas in the deployment.",
+                    "type": "integer",
+                    "example": 3
+                }
+            }
+        },
+        "models.ListPodsV2ResponseModel": {
+            "type": "object",
+            "properties": {
+                "pods": {
+                    "description": "A slice of ListPodsV2ResponseModelPod objects representing the pods.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.ListPodsV2ResponseModelPod"
+                    }
+                }
+            }
+        },
+        "models.ListPodsV2ResponseModelPod": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "description": "The name of the pod.",
+                    "type": "string",
+                    "example": "nginx-deploy-59849dcb58-tdknv"
+                },
+                "namespace": {
+                    "description": "The namespace of the pod.",
+                    "type": "string",
+                    "example": "default"
+                },
+                "status": {
+                    "description": "The status of the pod.",
+                    "type": "string",
+                    "example": "Running"
+                }
+            }
+        },
+        "models.ListServicesResponseModel": {
+            "type": "object",
+            "properties": {
+                "services": {
+                    "description": "A list of ListServicesResponseModelService containing services data.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.ListServicesResponseModelService"
+                    }
+                }
+            }
+        },
+        "models.ListServicesResponseModelPort": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "description": "The name of the port.",
+                    "type": "string",
+                    "example": "myport"
+                },
+                "node_port": {
+                    "description": "The node port number for the service. Optional.",
+                    "type": "integer",
+                    "example": 30030
+                },
+                "port": {
+                    "description": "The service port number. Optional.",
+                    "type": "integer",
+                    "example": 8080
+                },
+                "protocol": {
+                    "description": "The protocol used by the port. Optional.",
+                    "type": "string",
+                    "example": "TCP"
+                },
+                "target_port": {
+                    "description": "The target port number for the service. Optional.",
+                    "type": "integer",
+                    "example": 8080
+                }
+            }
+        },
+        "models.ListServicesResponseModelService": {
+            "type": "object",
+            "properties": {
+                "cluster_ips": {
+                    "description": "The cluster IP addresses assigned to the service.",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "10.1.2.30",
+                        "10.2.2.30"
+                    ]
+                },
+                "name": {
+                    "description": "The name of the service.",
+                    "type": "string",
+                    "example": "myservice"
+                },
+                "namespace": {
+                    "description": "The namespace of the service.",
+                    "type": "string",
+                    "example": "default"
+                },
+                "ports": {
+                    "description": "A slice of ListServicesResponseModelPort objects representing port mappings for the service.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.ListServicesResponseModelPort"
+                    }
+                },
+                "selector": {
+                    "description": "A map of key-value pairs used to select pods for the service.",
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "example": {
+                        "{\"app\"": " \"nginx\"}"
+                    }
+                },
+                "type": {
+                    "description": "The type of the service.",
+                    "type": "string",
+                    "example": "NodePort"
+                }
+            }
+        },
+        "models.UpdateDeploymentRequestModel": {
+            "type": "object",
+            "required": [
+                "name",
+                "namespace"
+            ],
+            "properties": {
+                "cpu_limit": {
+                    "description": "CPU limit for each pod in the deployment",
+                    "type": "string",
+                    "example": "200m"
+                },
+                "cpu_request": {
+                    "description": "CPU request for each pod in the deployment",
+                    "type": "string",
+                    "example": "100m"
+                },
+                "memory_limit": {
+                    "description": "Memory limit for each pod in the deployment",
+                    "type": "string",
+                    "example": "512Mi"
+                },
+                "memory_request": {
+                    "description": "Memory request for each pod in the deployment",
+                    "type": "string",
+                    "example": "256Mi"
+                },
+                "name": {
+                    "description": "Name for the deployment",
+                    "type": "string",
+                    "example": "mydeployment"
+                },
+                "namespace": {
+                    "description": "Namespace for the deployment",
+                    "type": "string",
+                    "example": "default"
+                },
+                "replicas": {
+                    "description": "Number of replicas for the deployment",
+                    "type": "integer",
+                    "maximum": 32,
+                    "minimum": 0,
+                    "example": 2
+                }
+            }
+        }
+    }
+}
